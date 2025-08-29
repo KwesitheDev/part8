@@ -32,5 +32,5 @@ export const EDIT_AUTHOR = gql`
             born
             bookCount
         }
-    )
+}
 `
