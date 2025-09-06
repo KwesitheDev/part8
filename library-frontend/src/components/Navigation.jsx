@@ -17,6 +17,9 @@ const Navigation = ({ token, logout }) => {
           <button>
             <Link to="/add">Add Book</Link>
           </button>
+          <button>
+            <Link to="/recommendations">Recommendations</Link>
+          </button>
           <button onClick={logout}>Logout</button>
         </>
       ) : (
