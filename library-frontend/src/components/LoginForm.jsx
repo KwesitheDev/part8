@@ -3,9 +3,9 @@ import { useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 import { useField } from '../hooks/useField'
 
-const LoginForm = ({ setToken, show }) => {
+const LoginForm = ({ setToken}) => {
     const username = useField('text')
-    const password = useField('text')
+    const password = useField('password')
   const [login, {error}] = useMutation(LOGIN, {
       onCompleted: (data) => {
           const token = data.login.value
@@ -13,7 +13,6 @@ const LoginForm = ({ setToken, show }) => {
           localStorage.setItem('library-user-token', token)
       }
   })
-    if (!show) return null
     const submit = async(e) => {
         e.preventDefault()
          await login({variables: {username: username.value, password: password.value}})
