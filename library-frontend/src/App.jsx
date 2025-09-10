@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useApolloClient, useSubscription } from "@apollo/client";
 import { BOOK_ADDED, ALL_BOOKS } from "./queries";
 import Authors from "./components/Authors";
@@ -20,24 +19,27 @@ const App = () => {
     client.resetStore();
   };
 
+  const updateCache = (cache, addedBook) => {
+  cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+    if (!allBooks.map(b => b.id).includes(addedBook.id)) {
+      return { allBooks: allBooks.concat(addedBook) }
+    } else {
+      return { allBooks }
+    }
+  })
+}
+
+
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
+    onData: ({ data, client }) => {
       const addedBook = data.data.bookAdded;
       window.alert(`New book added: ${addedBook.title}`);
 
-      client.cache.updateQuery({ query: ALL_BOOKS }, (existing) => {
-        if (!existing) return { allBooks: [addedBook] };
-        if (existing.allBooks.find((b) => b.title === addedBook.title)) {
-          return existing;
-        }
-        return {
-          allBooks: existing.allBooks.concat(addedBook),
-        };
-      });
+      updateCache(client.cache, addedBook)
     },
-  });
+  })
 
-  return (
+  return(
     <div>
       <Navigation token={token} logout={logout} />
       <Routes>
